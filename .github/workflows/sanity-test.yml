@@ -46,4 +46,4 @@ jobs:
             echo "Tests failed. Exiting with error."
             exit 1
           fi
-          echo "Sanity tests passed successfully."
+          echo "Sanity tests passed successfully"
