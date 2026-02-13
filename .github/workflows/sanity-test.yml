@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Trigger Sanity Test on LambdaTest
         id: trigger-test
         run: |
@@ -20,7 +23,7 @@ jobs:
           response=$(curl --location 'https://test-manager-api.lambdatest.com/api/atm/v1/hyperexecute' \
             --header 'accept: application/json' \
             --header 'Content-Type: application/json' \
-            --header 'Authorization: Basic ${{ secrets.LAMBDATEST_USERNAME }}:${{ secrets.LAMBDATEST_AUTH_KEY }}' \
+            --header 'Authorization: Basic ${{ secrets.LAMBDATEST_BASE64_AUTH }}' \
             --data '{
                 "test_run_id" : "${{ secrets.LAMBDATEST_TEST_RUN_ID }}",
                 "concurrency" : 1
@@ -37,7 +40,7 @@ jobs:
           sleep 240
           response=$(curl --location "https://api.hyperexecute.cloud/v2.0/job/$job_id" \
             --header "accept: application/json" \
-            --header "Authorization: Basic ${{ secrets.LAMBDATEST_USERNAME }}:${{ secrets.LAMBDATEST_AUTH_KEY }}")
+            --header "Authorization: Basic ${{ secrets.LAMBDATEST_BASE64_AUTH }}")
             
           echo "Response: $response"
           status=$(echo $response | jq -r '.data.status')
@@ -46,4 +49,4 @@ jobs:
             echo "Tests failed. Exiting with error."
             exit 1
           fi
-          echo "Sanity tests passed successfully"
+          echo "Sanity tests passed successfully."
